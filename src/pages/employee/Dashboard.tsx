@@ -6,6 +6,14 @@ import {
   Clock,
   PlusCircle,
   XCircle,
+  AlertTriangle,
+  Briefcase,
+  BarChart3,
+  ArrowDownRight,
+  ArrowUpRight,
+  Users,
+  Trophy,
+  Star,
 } from "lucide-react";
 import { StatCard } from "@/components/dashboard/StatCard";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -28,7 +36,7 @@ import {
 } from "@/components/ui/dialog";
 import { RequestStatusBadge } from "@/components/dashboard/RequestStatusBadge";
 import { VacationRequestForm } from "@/components/dashboard/VacationRequestForm";
-import { format } from "date-fns";
+import { format, addDays } from "date-fns";
 import { useAuth } from "@/hooks/useAuth";
 
 // Mock data - in a real app would come from API
@@ -59,6 +67,40 @@ const mockVacationRequests = [
   },
 ];
 
+// Mock upcoming time off
+const upcomingTimeOff = [
+  {
+    id: "1",
+    date: addDays(new Date(), 15),
+    duration: "7 days",
+    type: "Vacation",
+  },
+  {
+    id: "2",
+    date: addDays(new Date(), 45),
+    duration: "1 day",
+    type: "Personal Day",
+  },
+];
+
+// Mock team absences
+const teamAbsences = [
+  {
+    id: "1",
+    name: "Maria Johnson",
+    avatarUrl: "https://api.dicebear.com/7.x/avataaars/svg?seed=Maria",
+    startDate: addDays(new Date(), 5),
+    endDate: addDays(new Date(), 12),
+  },
+  {
+    id: "2",
+    name: "Alex Chen",
+    avatarUrl: "https://api.dicebear.com/7.x/avataaars/svg?seed=Alex",
+    startDate: addDays(new Date(), 20),
+    endDate: addDays(new Date(), 25),
+  },
+];
+
 const EmployeeDashboard = () => {
   const { user } = useAuth();
   const [openDialog, setOpenDialog] = useState(false);
@@ -81,14 +123,14 @@ const EmployeeDashboard = () => {
     <div className="p-6 space-y-6">
       <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
         <div>
-          <h1 className="text-3xl font-bold">Welcome, {user?.name}</h1>
+          <h1 className="text-3xl font-bold text-gray-800 dark:text-gray-100">Welcome, {user?.name}</h1>
           <p className="text-muted-foreground">
             Manage your vacation requests and view your stats
           </p>
         </div>
         <Dialog open={openDialog} onOpenChange={setOpenDialog}>
           <DialogTrigger asChild>
-            <Button>
+            <Button className="bg-vacay-600 hover:bg-vacay-700">
               <PlusCircle className="mr-2 h-4 w-4" />
               New Request
             </Button>
@@ -110,31 +152,102 @@ const EmployeeDashboard = () => {
           title="Vacation Balance"
           value={`${remainingDays} days`}
           description={`of ${totalDays} available days`}
-          icon={<CalendarIcon className="h-4 w-4" />}
+          icon={<CalendarIcon />}
+          variant="blue"
         />
         <StatCard
           title="Approved"
           value={approved}
           description="Vacation requests"
-          icon={<CheckCircle className="h-4 w-4" />}
+          icon={<CheckCircle />}
+          variant="green"
         />
         <StatCard
           title="Pending"
           value={pending}
           description="Awaiting approval"
-          icon={<Clock className="h-4 w-4" />}
+          icon={<Clock />}
+          variant="amber"
         />
         <StatCard
           title="Rejected"
           value={rejected}
           description="Declined requests"
-          icon={<XCircle className="h-4 w-4" />}
+          icon={<XCircle />}
+          variant="red"
         />
       </div>
 
+      <div className="grid gap-6 md:grid-cols-2">
+        <Card className="overflow-hidden">
+          <CardHeader className="bg-gradient-to-r from-blue-50 to-sky-50 dark:from-blue-900/20 dark:to-sky-900/20">
+            <CardTitle className="flex items-center">
+              <CalendarIcon className="mr-2 h-5 w-5 text-blue-500" />
+              Upcoming Time Off
+            </CardTitle>
+          </CardHeader>
+          <CardContent className="pt-6">
+            {upcomingTimeOff.length > 0 ? (
+              <div className="space-y-4">
+                {upcomingTimeOff.map((timeOff) => (
+                  <div key={timeOff.id} className="flex items-center p-3 rounded-lg bg-muted/50">
+                    <div className="bg-blue-100 text-blue-700 dark:bg-blue-700/30 dark:text-blue-300 p-2 rounded-full mr-3">
+                      <Briefcase className="h-5 w-5" />
+                    </div>
+                    <div>
+                      <p className="font-medium">{format(timeOff.date, "MMMM dd, yyyy")}</p>
+                      <p className="text-sm text-muted-foreground">{timeOff.duration} - {timeOff.type}</p>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            ) : (
+              <p className="text-muted-foreground text-center py-6">No upcoming time off</p>
+            )}
+          </CardContent>
+        </Card>
+
+        <Card>
+          <CardHeader className="bg-gradient-to-r from-purple-50 to-indigo-50 dark:from-purple-900/20 dark:to-indigo-900/20">
+            <CardTitle className="flex items-center">
+              <Users className="mr-2 h-5 w-5 text-purple-500" />
+              Team Absences
+            </CardTitle>
+          </CardHeader>
+          <CardContent className="pt-6">
+            {teamAbsences.length > 0 ? (
+              <div className="space-y-4">
+                {teamAbsences.map((absence) => (
+                  <div key={absence.id} className="flex items-center p-3 rounded-lg bg-muted/50">
+                    <div className="w-8 h-8 rounded-full overflow-hidden mr-3 bg-muted">
+                      <img
+                        src={absence.avatarUrl}
+                        alt={absence.name}
+                        className="w-full h-full object-cover"
+                      />
+                    </div>
+                    <div>
+                      <p className="font-medium">{absence.name}</p>
+                      <p className="text-sm text-muted-foreground">
+                        {format(absence.startDate, "MMM dd")} - {format(absence.endDate, "MMM dd, yyyy")}
+                      </p>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            ) : (
+              <p className="text-muted-foreground text-center py-6">No team absences</p>
+            )}
+          </CardContent>
+        </Card>
+      </div>
+
       <Card>
-        <CardHeader>
-          <CardTitle>Recent Requests</CardTitle>
+        <CardHeader className="bg-gradient-to-r from-gray-50 to-slate-50 dark:from-gray-900/20 dark:to-slate-900/20">
+          <CardTitle className="flex items-center">
+            <BarChart3 className="mr-2 h-5 w-5 text-slate-500" />
+            Recent Requests
+          </CardTitle>
         </CardHeader>
         <CardContent>
           <Table>

@@ -9,6 +9,11 @@ import {
   Tooltip,
   XAxis,
   YAxis,
+  LineChart,
+  Line,
+  PieChart,
+  Pie,
+  Cell,
 } from "recharts";
 import {
   Calendar as CalendarIcon,
@@ -16,6 +21,12 @@ import {
   Clock,
   Users,
   XCircle,
+  BarChart3,
+  ArrowUpRight,
+  TrendingUp,
+  Activity,
+  AlertCircle,
+  Award,
 } from "lucide-react";
 import { StatCard } from "@/components/dashboard/StatCard";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -113,6 +124,29 @@ const chartData = [
   },
 ];
 
+const pieData = [
+  { name: "Vacation", value: 55, color: "#10B981" },
+  { name: "Sick Leave", value: 25, color: "#F59E0B" },
+  { name: "Personal", value: 15, color: "#6366F1" },
+  { name: "Other", value: 5, color: "#EC4899" },
+];
+
+const lineData = [
+  { month: "Jan", requests: 8 },
+  { month: "Feb", requests: 12 },
+  { month: "Mar", requests: 15 },
+  { month: "Apr", requests: 10 },
+  { month: "May", requests: 22 },
+  { month: "Jun", requests: 18 },
+];
+
+// Mock top departments data
+const topDepartments = [
+  { id: "1", name: "Engineering", count: 28, percentage: 35 },
+  { id: "2", name: "Sales", count: 21, percentage: 26 },
+  { id: "3", name: "Marketing", count: 15, percentage: 19 },
+];
+
 const AdminDashboard = () => {
   const [vacationRequests] = useState(mockVacationRequests);
 
@@ -125,7 +159,7 @@ const AdminDashboard = () => {
   return (
     <div className="p-6 space-y-6">
       <div>
-        <h1 className="text-3xl font-bold">Admin Dashboard</h1>
+        <h1 className="text-3xl font-bold text-gray-800 dark:text-gray-100">Admin Dashboard</h1>
         <p className="text-muted-foreground">
           Overview of all vacation requests and team stats
         </p>
@@ -136,96 +170,197 @@ const AdminDashboard = () => {
           title="Total Employees"
           value={totalEmployees}
           description="Active team members"
-          icon={<Users className="h-4 w-4" />}
+          icon={<Users />}
+          variant="purple"
         />
         <StatCard
           title="Approved Requests"
           value={approved}
           description="Vacation requests"
-          icon={<CheckCircle className="h-4 w-4" />}
+          icon={<CheckCircle />}
+          variant="green"
         />
         <StatCard
           title="Pending Requests"
           value={pending}
           description="Awaiting approval"
-          icon={<Clock className="h-4 w-4" />}
+          icon={<Clock />}
+          variant="amber"
         />
         <StatCard
           title="Rejected Requests"
           value={rejected}
           description="Declined requests"
-          icon={<XCircle className="h-4 w-4" />}
+          icon={<XCircle />}
+          variant="red"
         />
+      </div>
+      
+      <div className="grid gap-6 md:grid-cols-2">
+        <Card>
+          <CardHeader className="bg-gradient-to-r from-green-50 to-emerald-50 dark:from-green-900/20 dark:to-emerald-900/20">
+            <CardTitle className="flex items-center">
+              <TrendingUp className="mr-2 h-5 w-5 text-green-500" />
+              Request Trends
+            </CardTitle>
+          </CardHeader>
+          <CardContent className="p-6">
+            <div className="h-[250px]">
+              <ResponsiveContainer width="100%" height="100%">
+                <LineChart data={lineData}>
+                  <CartesianGrid strokeDasharray="3 3" stroke="#e0e0e0" />
+                  <XAxis dataKey="month" stroke="#888888" />
+                  <YAxis stroke="#888888" />
+                  <Tooltip />
+                  <Line
+                    type="monotone"
+                    dataKey="requests"
+                    stroke="#0ea5e9"
+                    strokeWidth={2}
+                    dot={{ r: 4 }}
+                    activeDot={{ r: 6, strokeWidth: 2 }}
+                  />
+                </LineChart>
+              </ResponsiveContainer>
+            </div>
+          </CardContent>
+        </Card>
+
+        <Card>
+          <CardHeader className="bg-gradient-to-r from-blue-50 to-indigo-50 dark:from-blue-900/20 dark:to-indigo-900/20">
+            <CardTitle className="flex items-center">
+              <Activity className="mr-2 h-5 w-5 text-blue-500" />
+              Leave Types
+            </CardTitle>
+          </CardHeader>
+          <CardContent className="p-6">
+            <div className="h-[250px]">
+              <ResponsiveContainer width="100%" height="100%">
+                <PieChart>
+                  <Pie
+                    data={pieData}
+                    cx="50%"
+                    cy="50%"
+                    outerRadius={80}
+                    fill="#8884d8"
+                    dataKey="value"
+                    nameKey="name"
+                    label={(entry) => entry.name}
+                    labelLine={false}
+                  >
+                    {pieData.map((entry, index) => (
+                      <Cell key={`cell-${index}`} fill={entry.color} />
+                    ))}
+                  </Pie>
+                  <Tooltip />
+                </PieChart>
+              </ResponsiveContainer>
+            </div>
+          </CardContent>
+        </Card>
       </div>
 
       <Card className="col-span-full">
-        <CardHeader>
-          <CardTitle>Vacation Request Trends</CardTitle>
+        <CardHeader className="bg-gradient-to-r from-sky-50 to-blue-50 dark:from-sky-900/20 dark:to-blue-900/20">
+          <CardTitle className="flex items-center">
+            <BarChart3 className="mr-2 h-5 w-5 text-sky-500" />
+            Monthly Distribution
+          </CardTitle>
         </CardHeader>
         <CardContent>
           <div className="h-[300px]">
             <ResponsiveContainer width="100%" height="100%">
               <BarChart data={chartData}>
-                <CartesianGrid strokeDasharray="3 3" />
-                <XAxis dataKey="month" />
-                <YAxis />
+                <CartesianGrid strokeDasharray="3 3" stroke="#e0e0e0" />
+                <XAxis dataKey="month" stroke="#888888" />
+                <YAxis stroke="#888888" />
                 <Tooltip />
                 <Legend />
-                <Bar dataKey="approved" fill="#10b981" name="Approved" />
-                <Bar dataKey="pending" fill="#f59e0b" name="Pending" />
-                <Bar dataKey="rejected" fill="#ef4444" name="Rejected" />
+                <Bar dataKey="approved" fill="#10b981" name="Approved" radius={[4, 4, 0, 0]} />
+                <Bar dataKey="pending" fill="#f59e0b" name="Pending" radius={[4, 4, 0, 0]} />
+                <Bar dataKey="rejected" fill="#ef4444" name="Rejected" radius={[4, 4, 0, 0]} />
               </BarChart>
             </ResponsiveContainer>
           </div>
         </CardContent>
       </Card>
 
-      <Card>
-        <CardHeader>
-          <CardTitle>Recent Requests</CardTitle>
-        </CardHeader>
-        <CardContent>
-          <Table>
-            <TableHeader>
-              <TableRow>
-                <TableHead>Employee</TableHead>
-                <TableHead>Start Date</TableHead>
-                <TableHead>End Date</TableHead>
-                <TableHead>Days</TableHead>
-                <TableHead>Reason</TableHead>
-                <TableHead>Status</TableHead>
-              </TableRow>
-            </TableHeader>
-            <TableBody>
-              {vacationRequests.map((request) => {
-                const start = new Date(request.startDate);
-                const end = new Date(request.endDate);
-                const diffTime = Math.abs(end.getTime() - start.getTime());
-                const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24)) + 1;
+      <div className="grid gap-6 md:grid-cols-3">
+        <Card className="md:col-span-1">
+          <CardHeader className="bg-gradient-to-r from-purple-50 to-fuchsia-50 dark:from-purple-900/20 dark:to-fuchsia-900/20">
+            <CardTitle className="flex items-center">
+              <Award className="mr-2 h-5 w-5 text-purple-500" />
+              Top Departments
+            </CardTitle>
+          </CardHeader>
+          <CardContent className="p-6">
+            <div className="space-y-4">
+              {topDepartments.map((dept) => (
+                <div key={dept.id} className="flex items-center justify-between">
+                  <div className="flex items-center">
+                    <div className="w-2 h-2 rounded-full bg-vacay-600 mr-2"></div>
+                    <span>{dept.name}</span>
+                  </div>
+                  <div className="flex items-center">
+                    <span className="text-sm font-medium mr-2">{dept.count}</span>
+                    <span className="text-xs text-green-600 bg-green-100 px-1.5 py-0.5 rounded-full">
+                      {dept.percentage}%
+                    </span>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </CardContent>
+        </Card>
 
-                return (
-                  <TableRow key={request.id}>
-                    <TableCell className="font-medium">
-                      {request.employeeName}
-                    </TableCell>
-                    <TableCell>
-                      {format(new Date(request.startDate), "MMM dd, yyyy")}
-                    </TableCell>
-                    <TableCell>
-                      {format(new Date(request.endDate), "MMM dd, yyyy")}
-                    </TableCell>
-                    <TableCell>{diffDays} days</TableCell>
-                    <TableCell>{request.reason}</TableCell>
-                    <TableCell>
-                      <RequestStatusBadge status={request.status} />
-                    </TableCell>
-                  </TableRow>
-                );
-              })}
-            </TableBody>
-          </Table>
-        </CardContent>
-      </Card>
+        <Card className="md:col-span-2">
+          <CardHeader className="bg-gradient-to-r from-slate-50 to-gray-50 dark:from-slate-900/20 dark:to-gray-900/20">
+            <CardTitle className="flex items-center">
+              <AlertCircle className="mr-2 h-5 w-5 text-slate-500" />
+              Recent Requests
+            </CardTitle>
+          </CardHeader>
+          <CardContent>
+            <Table>
+              <TableHeader>
+                <TableRow>
+                  <TableHead>Employee</TableHead>
+                  <TableHead>Start Date</TableHead>
+                  <TableHead>End Date</TableHead>
+                  <TableHead>Days</TableHead>
+                  <TableHead>Status</TableHead>
+                </TableRow>
+              </TableHeader>
+              <TableBody>
+                {vacationRequests.map((request) => {
+                  const start = new Date(request.startDate);
+                  const end = new Date(request.endDate);
+                  const diffTime = Math.abs(end.getTime() - start.getTime());
+                  const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24)) + 1;
+
+                  return (
+                    <TableRow key={request.id}>
+                      <TableCell className="font-medium">
+                        {request.employeeName}
+                      </TableCell>
+                      <TableCell>
+                        {format(new Date(request.startDate), "MMM dd, yyyy")}
+                      </TableCell>
+                      <TableCell>
+                        {format(new Date(request.endDate), "MMM dd, yyyy")}
+                      </TableCell>
+                      <TableCell>{diffDays} days</TableCell>
+                      <TableCell>
+                        <RequestStatusBadge status={request.status} />
+                      </TableCell>
+                    </TableRow>
+                  );
+                })}
+              </TableBody>
+            </Table>
+          </CardContent>
+        </Card>
+      </div>
     </div>
   );
 };
