@@ -20,7 +20,7 @@ export const vacayApi = createApi({
   endpoints: (builder) => ({
     // Auth endpoints
     login: builder.mutation<LoginResponse, LoginCredentials>({
-      query: (credentials: LoginCredentials) => ({
+      query: (credentials) => ({
         url: '/auth/login',
         method: 'POST',
         body: credentials,
@@ -29,7 +29,7 @@ export const vacayApi = createApi({
     
     // Vacation requests endpoints
     getEmployeeVacations: builder.query<VacationRequest[], string>({
-      query: (employeeId: string) => `/vacations/employee/${employeeId}`,
+      query: (employeeId) => `/vacations/employee/${employeeId}`,
       providesTags: ['Vacations'],
     }),
     
@@ -39,7 +39,7 @@ export const vacayApi = createApi({
     }),
     
     createVacationRequest: builder.mutation<VacationRequest, Partial<VacationRequest>>({
-      query: (request: Partial<VacationRequest>) => ({
+      query: (request) => ({
         url: '/vacations',
         method: 'POST',
         body: request,
@@ -48,7 +48,7 @@ export const vacayApi = createApi({
     }),
     
     updateVacationRequest: builder.mutation<VacationRequest, Partial<VacationRequest> & { id: string }>({
-      query: ({ id, ...patch }: Partial<VacationRequest> & { id: string }) => ({
+      query: ({ id, ...patch }) => ({
         url: `/vacations/${id}`,
         method: 'PATCH',
         body: patch,
@@ -58,7 +58,7 @@ export const vacayApi = createApi({
     
     // Vacation balance endpoints
     getVacationBalance: builder.query<VacationBalance, string>({
-      query: (employeeId: string) => `/balance/${employeeId}`,
+      query: (employeeId) => `/balance/${employeeId}`,
       providesTags: ['Balance'],
     }),
   }),
