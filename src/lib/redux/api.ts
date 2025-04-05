@@ -1,5 +1,5 @@
 
-import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
+import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/dist/query/react';
 import { LoginCredentials, LoginResponse, VacationRequest, VacationBalance } from '../types';
 import { RootState } from './store';
 
@@ -19,8 +19,8 @@ export const vacayApi = createApi({
   tagTypes: ['Vacations', 'Balance'],
   endpoints: (builder) => ({
     // Auth endpoints
-    login: builder.mutation<LoginResponse, LoginCredentials>({
-      query: (credentials) => ({
+    login: builder.mutation({
+      query: (credentials: LoginCredentials) => ({
         url: '/auth/login',
         method: 'POST',
         body: credentials,
@@ -28,18 +28,18 @@ export const vacayApi = createApi({
     }),
     
     // Vacation requests endpoints
-    getEmployeeVacations: builder.query<VacationRequest[], string>({
-      query: (employeeId) => `/vacations/employee/${employeeId}`,
+    getEmployeeVacations: builder.query({
+      query: (employeeId: string) => `/vacations/employee/${employeeId}`,
       providesTags: ['Vacations'],
     }),
     
-    getAllVacations: builder.query<VacationRequest[], void>({
+    getAllVacations: builder.query({
       query: () => '/vacations',
       providesTags: ['Vacations'],
     }),
     
-    createVacationRequest: builder.mutation<VacationRequest, Partial<VacationRequest>>({
-      query: (request) => ({
+    createVacationRequest: builder.mutation({
+      query: (request: Partial<VacationRequest>) => ({
         url: '/vacations',
         method: 'POST',
         body: request,
@@ -47,8 +47,8 @@ export const vacayApi = createApi({
       invalidatesTags: ['Vacations'],
     }),
     
-    updateVacationRequest: builder.mutation<VacationRequest, Partial<VacationRequest>>({
-      query: ({ id, ...patch }) => ({
+    updateVacationRequest: builder.mutation({
+      query: ({ id, ...patch }: Partial<VacationRequest> & { id: string }) => ({
         url: `/vacations/${id}`,
         method: 'PATCH',
         body: patch,
@@ -57,8 +57,8 @@ export const vacayApi = createApi({
     }),
     
     // Vacation balance endpoints
-    getVacationBalance: builder.query<VacationBalance, string>({
-      query: (employeeId) => `/balance/${employeeId}`,
+    getVacationBalance: builder.query({
+      query: (employeeId: string) => `/balance/${employeeId}`,
       providesTags: ['Balance'],
     }),
   }),

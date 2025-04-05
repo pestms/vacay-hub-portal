@@ -32,6 +32,7 @@ export const LoginForm = () => {
   });
 
   const onSubmit = async (data: LoginFormValues) => {
+    // Ensure we pass data directly as it already matches the LoginCredentials type
     const success = await login(data);
     if (success) {
       // Check stored user to determine where to navigate
