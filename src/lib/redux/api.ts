@@ -1,5 +1,5 @@
 
-import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/dist/query/react';
+import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
 import { LoginCredentials, LoginResponse, VacationRequest, VacationBalance } from '../types';
 import { RootState } from './store';
 

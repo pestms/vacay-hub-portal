@@ -1,6 +1,6 @@
 
-import { configureStore } from '@reduxjs/toolkit/dist/configureStore';
-import { setupListeners } from '@reduxjs/toolkit/dist/query';
+import { configureStore } from '@reduxjs/toolkit';
+import { setupListeners } from '@reduxjs/toolkit/query';
 import authReducer from './authSlice';
 import { vacayApi } from './api';
 

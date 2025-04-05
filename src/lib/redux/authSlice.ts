@@ -1,5 +1,5 @@
 
-import { createSlice, PayloadAction } from '@reduxjs/toolkit/dist/createSlice';
+import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { AuthState, User } from '../types';
 
 // Mock function to simulate loading user from localStorage
