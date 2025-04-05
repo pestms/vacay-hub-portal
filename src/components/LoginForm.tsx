@@ -17,6 +17,7 @@ import {
 } from '@/components/ui/form';
 import { useAuth } from '@/hooks/useAuth';
 import { loginSchema, LoginFormValues } from '@/lib/validations/auth';
+import { LoginCredentials } from '@/lib/types';
 
 export const LoginForm = () => {
   const { login, isLoading } = useAuth();
@@ -32,8 +33,8 @@ export const LoginForm = () => {
   });
 
   const onSubmit = async (data: LoginFormValues) => {
-    // Make sure data meets the LoginCredentials type requirements
-    const loginData = {
+    // Create a properly typed LoginCredentials object
+    const loginData: LoginCredentials = {
       email: data.email,
       password: data.password
     };
