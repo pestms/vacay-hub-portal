@@ -39,6 +39,21 @@ export const useAuth = () => {
           description: "Welcome back, Admin!",
         });
         return true;
+      } else if (credentials.email === 'hr@example.com' && credentials.password === 'password') {
+        dispatch(loginSuccess({ 
+          user: { 
+            id: '3', 
+            email: credentials.email, 
+            name: 'HR Manager',
+            role: 'hr' 
+          },
+          token: 'mock-jwt-token-hr' 
+        }));
+        toast({
+          title: "Login successful",
+          description: "Welcome back, HR Manager!",
+        });
+        return true;
       } else if (credentials.email === 'employee@example.com' && credentials.password === 'password') {
         dispatch(loginSuccess({ 
           user: { 
@@ -91,6 +106,7 @@ export const useAuth = () => {
     login, 
     logout: logoutUser,
     isAdmin: user?.role === 'admin',
+    isHR: user?.role === 'hr',
     isEmployee: user?.role === 'employee',
   };
 };

@@ -14,12 +14,18 @@ import {
   Settings,
   Users,
   User,
+  ChevronDown,
+  ChevronUp,
+  Briefcase,
+  UserCog
 } from 'lucide-react';
 
 export function AppSidebar() {
   const [collapsed, setCollapsed] = useState(false);
-  const { logout, user, isAdmin } = useAuth();
+  const { logout, user, isAdmin, isHR } = useAuth();
   const location = useLocation();
+  const [personalExpanded, setPersonalExpanded] = useState(true);
+  const [officeExpanded, setOfficeExpanded] = useState(true);
 
   const adminNav = [
     {
@@ -72,7 +78,48 @@ export function AppSidebar() {
     },
   ];
 
-  const navItems = isAdmin ? adminNav : employeeNav;
+  const hrPersonalNav = [
+    {
+      title: "Dashboard",
+      href: "/hr/personal",
+      icon: <LayoutDashboard className="h-5 w-5" />,
+    },
+    {
+      title: "My Requests",
+      href: "/hr/personal/requests",
+      icon: <ClipboardCheck className="h-5 w-5" />,
+    },
+    {
+      title: "Profile",
+      href: "/hr/personal/profile",
+      icon: <User className="h-5 w-5" />,
+    },
+  ];
+
+  const hrOfficeNav = [
+    {
+      title: "Dashboard",
+      href: "/hr/office",
+      icon: <LayoutDashboard className="h-5 w-5" />,
+    },
+    {
+      title: "User Management",
+      href: "/hr/office/users",
+      icon: <UserCog className="h-5 w-5" />,
+    },
+    {
+      title: "All Requests",
+      href: "/hr/office/requests",
+      icon: <ClipboardCheck className="h-5 w-5" />,
+    },
+    {
+      title: "Calendar",
+      href: "/hr/office/calendar",
+      icon: <Calendar className="h-5 w-5" />,
+    },
+  ];
+
+  const navItems = isAdmin ? adminNav : (isHR ? [] : employeeNav);
 
   return (
     <div
@@ -83,7 +130,7 @@ export function AppSidebar() {
     >
       <div className="flex h-14 items-center border-b px-4">
         <Link
-          to={isAdmin ? "/admin" : "/dashboard"}
+          to={isAdmin ? "/admin" : (isHR ? "/hr/personal" : "/dashboard")}
           className="flex items-center gap-2 font-semibold"
         >
           <Calendar className="h-6 w-6 text-vacay-600" />
@@ -100,21 +147,102 @@ export function AppSidebar() {
       </div>
       <ScrollArea className="flex-1 py-4">
         <nav className="grid gap-1 px-2">
-          {navItems.map((item) => (
-            <Link
-              key={item.href}
-              to={item.href}
-              className={cn(
-                "flex items-center gap-3 rounded-md px-3 py-2 text-sm font-medium transition-colors hover:bg-sidebar-accent hover:text-sidebar-accent-foreground",
-                location.pathname === item.href
-                  ? "bg-sidebar-accent text-sidebar-accent-foreground"
-                  : "transparent"
-              )}
-            >
-              {item.icon}
-              {!collapsed && <span>{item.title}</span>}
-            </Link>
-          ))}
+          {isHR ? (
+            <>
+              {/* Personal Section for HR */}
+              <div className="mb-2">
+                <button
+                  className={cn(
+                    "flex items-center gap-2 w-full rounded-md px-3 py-2 text-sm font-medium transition-colors hover:bg-sidebar-accent hover:text-sidebar-accent-foreground",
+                    personalExpanded && "bg-sidebar-accent/50"
+                  )}
+                  onClick={() => !collapsed && setPersonalExpanded(!personalExpanded)}
+                >
+                  <User className="h-5 w-5" />
+                  {!collapsed && (
+                    <>
+                      <span className="flex-1 text-left">Personal</span>
+                      {personalExpanded ? <ChevronUp className="h-4 w-4" /> : <ChevronDown className="h-4 w-4" />}
+                    </>
+                  )}
+                </button>
+                
+                {!collapsed && personalExpanded && (
+                  <div className="ml-4 mt-1 border-l-2 border-sidebar-border pl-2">
+                    {hrPersonalNav.map((item) => (
+                      <Link
+                        key={item.href}
+                        to={item.href}
+                        className={cn(
+                          "flex items-center gap-3 rounded-md px-3 py-2 text-sm font-medium transition-colors hover:bg-sidebar-accent hover:text-sidebar-accent-foreground",
+                          location.pathname === item.href &&
+                            "bg-sidebar-accent text-sidebar-accent-foreground"
+                        )}
+                      >
+                        {item.icon}
+                        {!collapsed && <span>{item.title}</span>}
+                      </Link>
+                    ))}
+                  </div>
+                )}
+              </div>
+
+              {/* Office Section for HR */}
+              <div className="mb-2">
+                <button
+                  className={cn(
+                    "flex items-center gap-2 w-full rounded-md px-3 py-2 text-sm font-medium transition-colors hover:bg-sidebar-accent hover:text-sidebar-accent-foreground",
+                    officeExpanded && "bg-sidebar-accent/50"
+                  )}
+                  onClick={() => !collapsed && setOfficeExpanded(!officeExpanded)}
+                >
+                  <Briefcase className="h-5 w-5" />
+                  {!collapsed && (
+                    <>
+                      <span className="flex-1 text-left">Office</span>
+                      {officeExpanded ? <ChevronUp className="h-4 w-4" /> : <ChevronDown className="h-4 w-4" />}
+                    </>
+                  )}
+                </button>
+                
+                {!collapsed && officeExpanded && (
+                  <div className="ml-4 mt-1 border-l-2 border-sidebar-border pl-2">
+                    {hrOfficeNav.map((item) => (
+                      <Link
+                        key={item.href}
+                        to={item.href}
+                        className={cn(
+                          "flex items-center gap-3 rounded-md px-3 py-2 text-sm font-medium transition-colors hover:bg-sidebar-accent hover:text-sidebar-accent-foreground",
+                          location.pathname === item.href &&
+                            "bg-sidebar-accent text-sidebar-accent-foreground"
+                        )}
+                      >
+                        {item.icon}
+                        {!collapsed && <span>{item.title}</span>}
+                      </Link>
+                    ))}
+                  </div>
+                )}
+              </div>
+            </>
+          ) : (
+            // Regular navigation for Admin and Employee roles
+            navItems.map((item) => (
+              <Link
+                key={item.href}
+                to={item.href}
+                className={cn(
+                  "flex items-center gap-3 rounded-md px-3 py-2 text-sm font-medium transition-colors hover:bg-sidebar-accent hover:text-sidebar-accent-foreground",
+                  location.pathname === item.href
+                    ? "bg-sidebar-accent text-sidebar-accent-foreground"
+                    : "transparent"
+                )}
+              >
+                {item.icon}
+                {!collapsed && <span>{item.title}</span>}
+              </Link>
+            ))
+          )}
         </nav>
       </ScrollArea>
       <div className="mt-auto border-t p-4">
